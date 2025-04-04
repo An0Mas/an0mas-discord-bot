@@ -1,0 +1,28 @@
+# === Java build ===
+*.class
+
+# === Log files ===
+*.log
+
+# === Eclipse ===
+.project
+.classpath
+.settings/
+
+# === Maven ===
+target/
+
+# === OS-specific ===
+.DS_Store
+Thumbs.db
+
+# === Lombok generated config ===
+lombok.config
+
+# === IDE backups ===
+*.bak
+*.swp
+*.tmp
+
+# === VSCode (‚à‚µŽg‚Á‚Ä‚½‚ç) ===
+.vscode/
