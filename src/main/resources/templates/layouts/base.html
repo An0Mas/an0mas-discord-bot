@@ -1,0 +1,26 @@
+<!-- templates/layouts/base.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Bot 管理画面</title>
+
+	<!-- 共通スタイル（ナビゲーションなど） -->
+	<link rel="stylesheet" th:href="@{/css/navbar.css}" />
+
+	<!-- 🌟 子ページごとの追加スタイルを差し込む場所 -->
+	<th:block layout:fragment="head-extra"></th:block>
+</head>
+
+<body>
+	<!-- ナビゲーションバー -->
+	<div th:replace="fragments/navbar :: navbar"></div>
+
+	<!-- 各ページの中身がここに入る -->
+	<div layout:fragment="content">
+		<p>ここにコンテンツが入ります（差し込み用）</p>
+	</div>
+</body>
+
+</html>

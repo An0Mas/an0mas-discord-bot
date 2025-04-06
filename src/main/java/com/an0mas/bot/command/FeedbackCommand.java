@@ -18,27 +18,34 @@ public class FeedbackCommand extends BaseCommand {
 
 	@Override
 	public void execute(SlashCommandInteractionEvent event) {
-		// 📝 件名入力欄（1行）
+		// 📝 件名
 		TextInput titleInput = TextInput.create("title", "件名", TextInputStyle.SHORT)
 				.setPlaceholder("例：新しいコマンドが欲しい！")
 				.setRequired(true)
 				.setMaxLength(100)
 				.build();
 
-		// 📝 本文入力欄（複数行）
+		// 📝 内容
 		TextInput contentInput = TextInput.create("content", "内容", TextInputStyle.PARAGRAPH)
-				.setPlaceholder("Botに関するフィードバックのみを記入してください")
+				.setPlaceholder("Botに関するフィードバックを入力してください")
 				.setRequired(true)
 				.setMaxLength(1000)
 				.build();
 
-		// 📮 モーダルの構築（説明文はタイトルに含めてわかりやすく）
+		// 🕵️ 匿名送信
+		TextInput anonymousInput = TextInput.create("anonymous", "匿名で送る？", TextInputStyle.SHORT)
+				.setPlaceholder("yes と入力すると匿名になります")
+				.setRequired(false)
+				.setMaxLength(10)
+				.build();
+
+		// 📮 モーダル
 		Modal modal = Modal.create("feedback_modal", "📮 Botへのフィードバックを送信")
 				.addActionRow(titleInput)
 				.addActionRow(contentInput)
+				.addActionRow(anonymousInput)
 				.build();
 
-		// ✅ モーダルを表示（その場でポップアップ）
 		event.replyModal(modal).queue();
 	}
 

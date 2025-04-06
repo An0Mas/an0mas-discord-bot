@@ -14,7 +14,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 /**
  * 📂 DatabaseHelper:
- * SQLiteを使って、サーバー・ユーザーのコマンド使用許可を管理するユーティリティクラス。
+ * SQLiteを使って、コマンド権限・ブラックリスト・設定（メンテナンス状態）などを管理するユーティリティクラス。
  */
 public class DatabaseHelper {
 
@@ -31,23 +31,47 @@ public class DatabaseHelper {
 				Statement stmt = conn.createStatement()) {
 
 			String createServerTable = """
-					CREATE TABLE IF NOT EXISTS server_permissions (
-					    id INTEGER PRIMARY KEY AUTOINCREMENT,
-					    guild_id TEXT NOT NULL,
-					    command_name TEXT NOT NULL
-					);
+						CREATE TABLE IF NOT EXISTS server_permissions (
+						    id INTEGER PRIMARY KEY AUTOINCREMENT,
+						    guild_id TEXT NOT NULL,
+						    command_name TEXT NOT NULL
+						);
 					""";
 
 			String createUserTable = """
-					CREATE TABLE IF NOT EXISTS user_permissions (
-					    id INTEGER PRIMARY KEY AUTOINCREMENT,
-					    user_id TEXT NOT NULL,
-					    command_name TEXT NOT NULL
-					);
+						CREATE TABLE IF NOT EXISTS user_permissions (
+						    id INTEGER PRIMARY KEY AUTOINCREMENT,
+						    user_id TEXT NOT NULL,
+						    command_name TEXT NOT NULL
+						);
+					""";
+
+			String createBlacklistTable = """
+						CREATE TABLE IF NOT EXISTS blacklist (
+						    user_id TEXT PRIMARY KEY
+						);
+					""";
+
+			String createSettingsTable = """
+						CREATE TABLE IF NOT EXISTS settings (
+						    key TEXT PRIMARY KEY,
+						    value TEXT NOT NULL,
+						    updated_at TEXT NOT NULL
+						);
 					""";
 
 			stmt.execute(createServerTable);
 			stmt.execute(createUserTable);
+			stmt.execute(createBlacklistTable);
+			stmt.execute(createSettingsTable);
+
+			// 🔧 メンテナンスモードが未設定なら false に初期化
+			ResultSet rs = stmt.executeQuery("SELECT 1 FROM settings WHERE key = 'maintenance_mode'");
+			if (!rs.next()) {
+				stmt.execute(
+						"INSERT INTO settings (key, value, updated_at) VALUES ('maintenance_mode', 'false', datetime('now'))");
+				System.out.println("🛠️ メンテナンスモード初期化: false");
+			}
 
 			System.out.println("✅ データベース初期化完了！");
 		} catch (Exception e) {
@@ -55,7 +79,32 @@ public class DatabaseHelper {
 		}
 	}
 
-	// ========== 使用許可の追加・削除 ==========
+	// ========== メンテナンスモード ==========
+
+	/** 🛠️ 現在のメンテナンスモード状態を取得（true or false） */
+	public static boolean isMaintenanceMode() {
+		String sql = "SELECT value FROM settings WHERE key = 'maintenance_mode'";
+		try (Connection conn = DriverManager.getConnection(DB_URL);
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				ResultSet rs = stmt.executeQuery()) {
+
+			if (rs.next()) {
+				return Boolean.parseBoolean(rs.getString("value"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/** 🛠️ メンテナンスモードを変更（ON/OFF） */
+	public static void setMaintenanceMode(boolean enabled) {
+		String sql = "UPDATE settings SET value = ?, updated_at = datetime('now') WHERE key = 'maintenance_mode'";
+		executeUpdate(sql, String.valueOf(enabled));
+		System.out.println("🛠️ メンテナンスモード更新: " + enabled);
+	}
+
+	// ========== コマンド権限（Guild/User） ==========
 
 	public static void addGuildPermission(String guildId, String commandName) {
 		executeUpdate("INSERT INTO server_permissions (guild_id, command_name) VALUES (?, ?)", guildId, commandName);
@@ -79,27 +128,49 @@ public class DatabaseHelper {
 		System.out.println(affected > 0 ? "🗑️ ユーザーの許可を削除: " + userId : "⚠️ 指定されたユーザー許可が見つかりません");
 	}
 
-	// ========== 使用可否チェック ==========
-
-	/**
-	 * 🎮 サーバーが指定コマンドを使用可能か？
-	 */
 	public static boolean isGuildCommandAllowed(String guildId, String commandName) {
 		return exists("SELECT 1 FROM server_permissions WHERE guild_id = ? AND command_name = ?", guildId, commandName);
 	}
 
-	/**
-	 * 👤 ユーザーが指定コマンドを使用可能か？
-	 */
 	public static boolean isUserCommandAllowed(String userId, String commandName) {
 		return exists("SELECT 1 FROM user_permissions WHERE user_id = ? AND command_name = ?", userId, commandName);
 	}
 
-	// ========== 許可された対象一覧 ==========
+	// ========== ブラックリスト管理 ==========
 
-	/**
-	 * ✅ 指定コマンドを許可しているGuild一覧を取得
-	 */
+	public static boolean isUserBlacklisted(String userId) {
+		return exists("SELECT 1 FROM blacklist WHERE user_id = ?", userId);
+	}
+
+	public static void addUserToBlacklist(String userId) {
+		executeUpdate("INSERT OR IGNORE INTO blacklist (user_id) VALUES (?)", userId);
+		System.out.println("⛔ ブラックリスト追加: " + userId);
+	}
+
+	public static void removeUserFromBlacklist(String userId) {
+		int affected = executeUpdate("DELETE FROM blacklist WHERE user_id = ?", userId);
+		System.out.println(affected > 0 ? "✅ ブラックリスト解除: " + userId : "⚠️ 指定されたユーザーはブロックされていません");
+	}
+
+	public static List<String> getAllBlacklistedUsers() {
+		List<String> userIds = new ArrayList<>();
+		String sql = "SELECT user_id FROM blacklist";
+
+		try (Connection conn = DriverManager.getConnection(DB_URL);
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				ResultSet rs = stmt.executeQuery()) {
+
+			while (rs.next()) {
+				userIds.add(rs.getString("user_id"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return userIds;
+	}
+
+	// ========== 一覧取得（Guild/User） ==========
+
 	public static List<String> getGuildsAllowedForCommand(String commandName) {
 		List<String> guildIds = new ArrayList<>();
 		String sql = "SELECT DISTINCT guild_id FROM server_permissions WHERE command_name = ?";
@@ -116,13 +187,9 @@ public class DatabaseHelper {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return guildIds;
 	}
 
-	/**
-	 * 🎮 指定されたGuildに許可されているコマンド一覧を取得
-	 */
 	public static List<String> getCommandsAllowedForGuild(String guildId) {
 		List<String> commands = new ArrayList<>();
 		String sql = "SELECT DISTINCT command_name FROM server_permissions WHERE guild_id = ?";
@@ -139,13 +206,9 @@ public class DatabaseHelper {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return commands;
 	}
 
-	/**
-	 * 👤 指定されたユーザーに許可されているコマンド一覧を取得
-	 */
 	public static List<String> getCommandsAllowedForUser(String userId) {
 		List<String> commands = new ArrayList<>();
 		String sql = "SELECT DISTINCT command_name FROM user_permissions WHERE user_id = ?";
@@ -162,13 +225,9 @@ public class DatabaseHelper {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return commands;
 	}
 
-	/**
-	 * 📋 サーバーごとの全ての許可情報を取得
-	 */
 	public static Map<String, List<String>> getAllGuildPermissions() {
 		Map<String, List<String>> map = new HashMap<>();
 		String sql = "SELECT guild_id, command_name FROM server_permissions";
@@ -188,9 +247,6 @@ public class DatabaseHelper {
 		return map;
 	}
 
-	/**
-	 * 📋 ユーザーごとの全ての許可情報を取得
-	 */
 	public static Map<String, List<String>> getAllUserPermissions() {
 		Map<String, List<String>> map = new HashMap<>();
 		String sql = "SELECT user_id, command_name FROM user_permissions";
@@ -219,7 +275,6 @@ public class DatabaseHelper {
 			for (int i = 0; i < params.length; i++) {
 				pstmt.setString(i + 1, params[i]);
 			}
-
 			try (ResultSet rs = pstmt.executeQuery()) {
 				return rs.next();
 			}
@@ -236,7 +291,6 @@ public class DatabaseHelper {
 			for (int i = 0; i < params.length; i++) {
 				pstmt.setString(i + 1, params[i]);
 			}
-
 			return pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();

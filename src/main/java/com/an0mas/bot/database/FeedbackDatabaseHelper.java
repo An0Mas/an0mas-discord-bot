@@ -118,4 +118,93 @@ public class FeedbackDatabaseHelper {
 		}
 		return null;
 	}
+
+	/**
+	 * 🗑️ 指定されたIDのフィードバックを削除
+	 */
+	public static void deleteFeedbackById(int id) {
+		String sql = "DELETE FROM feedback WHERE id = ?";
+
+		try (Connection conn = DriverManager.getConnection(DB_URL);
+				PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, id);
+			int affected = stmt.executeUpdate();
+
+			if (affected > 0) {
+				System.out.println("🗑️ フィードバック削除: ID = " + id);
+			} else {
+				System.out.println("⚠️ 該当するフィードバックが見つかりませんでした（ID: " + id + "）");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 📃 ページごとのフィードバックを取得
+	 */
+	public static List<FeedbackEntry> getFeedbacksPaged(int offset, int limit) {
+		List<FeedbackEntry> list = new ArrayList<>();
+		String sql = "SELECT * FROM feedback ORDER BY id DESC LIMIT ? OFFSET ?";
+
+		try (Connection conn = DriverManager.getConnection(DB_URL);
+				PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, limit);
+			stmt.setInt(2, offset);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				FeedbackEntry entry = new FeedbackEntry(
+						rs.getInt("id"),
+						rs.getString("user_id"),
+						rs.getString("user_name"),
+						rs.getString("title"),
+						rs.getString("content"),
+						rs.getString("timestamp"));
+				list.add(entry);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	/**
+	 * 📊 フィードバックの総件数を取得
+	 */
+	public static int getFeedbackCount() {
+		String sql = "SELECT COUNT(*) FROM feedback";
+		try (Connection conn = DriverManager.getConnection(DB_URL);
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				ResultSet rs = stmt.executeQuery()) {
+
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	/**
+	 * 🔢 フィードバックの総件数を取得
+	 */
+	public static int getTotalFeedbackCount() {
+		String sql = "SELECT COUNT(*) FROM feedback";
+
+		try (Connection conn = DriverManager.getConnection(DB_URL);
+			 PreparedStatement stmt = conn.prepareStatement(sql);
+			 ResultSet rs = stmt.executeQuery()) {
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
 }

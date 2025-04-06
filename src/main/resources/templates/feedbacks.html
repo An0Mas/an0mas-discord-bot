@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+	<meta charset="UTF-8">
+	<title>📬 フィードバック一覧</title>
+	<link rel="stylesheet" th:href="@{/css/feedbacks.css}">
+</head>
+
+<body layout:decorate="~{base}">
+	<!-- 子コンテンツとして挿入 -->
+	<div layout:fragment="content">
+		<a href="/" class="back-button">← 管理メニューに戻る</a>
+		<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+			<h1>📬 フィードバック一覧</h1>
+			<p style="font-size: 0.9rem; color: #555;"
+				th:text="'全 ' + ${totalCount} + ' 件中 ' + ${startCount} + '〜' + ${endCount} + ' 件を表示中'">
+				件数
+			</p>
+		</div>
+
+		<!-- ✅ メッセージ表示 -->
+		<div th:if="${message}" class="feedback-message">
+			<p th:text="${message}">操作メッセージ</p>
+		</div>
+
+		<!-- 🔁 フィードバック一覧 -->
+		<div th:each="fb : ${feedbacks}" class="feedback">
+			<h2 th:text="${fb.title}">件名</h2>
+			<div class="meta">
+				<strong>ユーザー:</strong> <span th:text="${fb.userName}">匿名</span><br />
+				<strong>日時:</strong> <span th:text="${fb.timestamp}">日時</span>
+			</div>
+			<p th:text="${fb.content}">本文</p>
+
+			<!-- 🗑️ 削除フォーム -->
+			<form th:action="@{/feedbacks/delete}" method="post" onsubmit="return confirm('本当に削除しますか？');">
+				<input type="hidden" name="id" th:value="${fb.id}" />
+				<button type="submit" class="delete-btn" aria-label="削除" title="削除">🗑️ 削除</button>
+			</form>
+		</div>
+
+		<!-- ページネーション -->
+		<div class="pagination">
+
+			<!-- 前へボタン -->
+			<span th:if="${currentPage == 1}" class="page-link disabled">← 前へ</span>
+			<a th:if="${currentPage > 1}" th:href="@{/feedbacks(page=${currentPage - 1})}" class="page-link">← 前へ</a>
+
+			<!-- ページ番号（省略あり） -->
+			<span th:if="${totalPages <= 7}">
+				<span th:each="i : ${#numbers.sequence(1, totalPages)}">
+					<span th:if="${i == currentPage}" class="page-link current" th:text="${i}">1</span>
+					<a th:if="${i != currentPage}" th:href="@{/feedbacks(page=${i})}" class="page-link"
+						th:text="${i}">1</a>
+				</span>
+			</span>
+
+			<span th:if="${totalPages > 7}">
+				<!-- 1ページ目 -->
+				<span th:if="${currentPage > 4}">
+					<a th:href="@{/feedbacks(page=1)}" class="page-link">1</a>
+					<span class="page-link disabled">...</span>
+				</span>
+
+				<!-- 中央の範囲 -->
+				<span
+					th:each="i : ${#numbers.sequence(T(java.lang.Math).max(1, currentPage - 1), T(java.lang.Math).min(totalPages, currentPage + 1))}">
+					<span th:if="${i == currentPage}" class="page-link current" th:text="${i}">1</span>
+					<a th:if="${i != currentPage}" th:href="@{/feedbacks(page=${i})}" class="page-link"
+						th:text="${i}">1</a>
+				</span>
+
+				<!-- 最後のページ -->
+				<span th:if="${currentPage < totalPages - 2}">
+					<span class="page-link disabled">...</span>
+					<a th:href="@{/feedbacks(page=${totalPages})}" class="page-link" th:text="${totalPages}">10</a>
+				</span>
+			</span>
+
+			<!-- 次へボタン -->
+			<span th:if="${currentPage == totalPages}" class="page-link disabled">次へ →</span>
+			<a th:if="${currentPage < totalPages}" th:href="@{/feedbacks(page=${currentPage + 1})}" class="page-link">次へ
+				→</a>
+		</div>
+	</div>
+</body>
+
+</html>
