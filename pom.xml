@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
-			<version>5.0.0-beta.21</version> <!-- 最新が変わってたらあとで教えてね -->
+			<version>5.3.2</version> <!-- 最新安定版に変更 -->
 		</dependency>
 
 		<!-- SLF4J（ログ用、JDAに必要） -->
@@ -47,11 +47,11 @@
 			<version>2.16.0</version>
 		</dependency>
 
-		<!-- SQLite JDBC -->
+		<!-- SQLite JDBC 最新版（2024年4月時点） -->
 		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.43.2.0</version>
+    		<version>3.45.2.0</version>
 		</dependency>
 
 		<!-- Apache Commons Lang -->
@@ -68,5 +68,12 @@
 			<version>5.10.0</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+		<version>3.0.0</version>
+</dependency>
+
 	</dependencies>
 </project>

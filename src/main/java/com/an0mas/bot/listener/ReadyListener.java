@@ -1,0 +1,13 @@
+package com.an0mas.bot.listener;
+
+import org.jetbrains.annotations.NotNull;
+
+import net.dv8tion.jda.api.events.session.ReadyEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
+public class ReadyListener extends ListenerAdapter {
+    @Override
+    public void onReady(@NotNull ReadyEvent event) {
+        System.out.println("✅ Botが起動しました！ようこそ、" + event.getJDA().getSelfUser().getName());
+    }
+}
