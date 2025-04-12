@@ -30,7 +30,7 @@ public class FeedbackWebController {
 			Model model) {
 
 		final int pageSize = 5; // 1ページに表示する件数
-		int total = FeedbackDatabaseHelper.getTotalFeedbackCount();
+		int total = FeedbackDatabaseHelper.getFeedbackCount();
 		int totalPages = (int) Math.ceil((double) total / pageSize);
 
 		// ページが範囲外にならないように制御

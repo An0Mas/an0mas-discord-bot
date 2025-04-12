@@ -26,9 +26,14 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 public class Main {
 	public static void main(String[] args) throws Exception {
 		// 💾 データベース初期化
-		DatabaseHelper.initializeDatabase();
-		FeedbackDatabaseHelper.initializeDatabase();
-
+		try {
+			DatabaseHelper.initializeDatabase();
+			FeedbackDatabaseHelper.initializeDatabase();
+		} catch (Exception e) {
+			System.err.println("❌ データベースの初期化に失敗しました: " + e.getMessage());
+			e.printStackTrace();
+			return; // プログラムを終了する
+		}
 
 		// 🔐 .envファイルからトークンを読み込む
 		Dotenv dotenv = Dotenv.load();
@@ -48,9 +53,9 @@ public class Main {
 				.addEventListeners(
 						new SlashCommandListener(),
 						new ReadyListener(),
-					    new ModalInteractionListener(),
-					    new ButtonInteractionListener(),
-					    new BotJoinListener());
+						new ModalInteractionListener(),
+						new ButtonInteractionListener(),
+						new BotJoinListener());
 
 		// 🚀 Botを起動（非同期でログイン開始）
 		JDA jda = builder.build();
@@ -60,14 +65,19 @@ public class Main {
 		CommandsInitializer.registerSlashCommands(jda);
 
 		// ⏱️ テストGuildに即時反映（ここ！）
-		Guild testGuild = jda.getGuildById("588012659111100417");
-		if (testGuild != null) {
-			List<SlashCommandData> testCommands = CommandRegistry.getCommands().stream()
-					.map(BaseCommand::getSlashCommandData)
-					.filter(Objects::nonNull)
-					.toList();
-			testGuild.updateCommands().addCommands(testCommands).queue();
-			System.out.println("🚀 テストサーバーに即時登録しました！");
+		String testGuildId = ConfigLoader.get("TEST_GUILD_ID");
+		if (testGuildId == null || testGuildId.isBlank()) {
+			System.err.println("❌ TEST_GUILD_ID が見つかりません！");
+		} else {
+			Guild testGuild = jda.getGuildById(testGuildId);
+			if (testGuild != null) {
+				List<SlashCommandData> testCommands = CommandRegistry.getCommands().stream()
+						.map(BaseCommand::getSlashCommandData)
+						.filter(Objects::nonNull)
+						.toList();
+				testGuild.updateCommands().addCommands(testCommands).queue();
+				System.out.println("🚀 テストサーバーに即時登録しました！");
+			}
 		}
 
 		// 🛑 シャットダウン時の処理（きれいに終了）

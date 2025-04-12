@@ -10,6 +10,7 @@
 .env
 .settings/
 data/
+doc/
 
 # === Maven ===
 target/
