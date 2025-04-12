@@ -35,7 +35,8 @@ public class DatabaseHelper {
 	static {
 		HikariConfig config = new HikariConfig();
 		config.setJdbcUrl("jdbc:sqlite:" + dotenv.get("DB_PATH", "data/command_permissions.db"));
-		config.setMaximumPoolSize(10);
+		config.setMaximumPoolSize(10); // 最大プールサイズ
+		config.setMinimumIdle(5);     // 最小アイドルコネクション数
 		config.setIdleTimeout(30000); // 30秒間アイドル状態ならコネクションを閉じる
 		config.setConnectionTimeout(10000); // 10秒でタイムアウト
 		config.setLeakDetectionThreshold(2000); // コネクションリーク検出（2秒）
@@ -75,13 +76,9 @@ public class DatabaseHelper {
 	}
 
 	private static void initializeMaintenanceMode() {
-		String checkSql = "SELECT 1 FROM settings WHERE key = 'maintenance_mode'";
-		String insertSql = "INSERT INTO settings (key, value, updated_at) VALUES ('maintenance_mode', 'false', datetime('now'))";
-
-		if (!exists(checkSql)) {
-			executeUpdate(insertSql);
-			logger.info("🛠️ メンテナンスモード初期化: false");
-		}
+	    String insertSql = "INSERT OR IGNORE INTO settings (key, value, updated_at) VALUES ('maintenance_mode', 'false', datetime('now'))";
+	    executeUpdate(insertSql);
+	    logger.info("🛠️ メンテナンスモード初期化（必要なら挿入）: false");
 	}
 
 	// ========== メンテナンスモード ==========

@@ -20,7 +20,3 @@ CREATE TABLE IF NOT EXISTS settings (
     value TEXT NOT NULL,
     updated_at TEXT NOT NULL
 );
-
--- 初期データ挿入（メンテナンスモード）
-INSERT OR IGNORE INTO settings (key, value, updated_at) 
-VALUES ('maintenance_mode', 'false', datetime('now'));

@@ -17,6 +17,8 @@ import com.an0mas.bot.model.FeedbackEntry;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 /**
  * 💬 FeedbackDatabaseHelper:
  * ユーザーから送られたフィードバックをSQLiteで管理するユーティリティ。
@@ -26,13 +28,14 @@ public class FeedbackDatabaseHelper {
 
 	private static final HikariDataSource dataSource;
 
-	private static final String DB_URL = "jdbc:sqlite:data/feedbacks.db";
+	private static final Dotenv dotenv = Dotenv.load();
 	private static final String SCHEMA_FILE = "schemas/feedback_schema.sql";
 
 	static {
 		HikariConfig config = new HikariConfig();
-		config.setJdbcUrl(DB_URL);
-		config.setMaximumPoolSize(10);
+		config.setJdbcUrl("jdbc:sqlite:" + dotenv.get("FEEDBACK_DB_PATH", "data/feedbacks.db"));
+		config.setMaximumPoolSize(10); // 最大プールサイズ
+		config.setMinimumIdle(5);     // 最小アイドルコネクション数
 		config.setIdleTimeout(30000); // 30秒間アイドル状態ならコネクションを閉じる
 		config.setConnectionTimeout(10000); // 10秒でタイムアウト
 		config.setLeakDetectionThreshold(2000); // コネクションリーク検出（2秒）
