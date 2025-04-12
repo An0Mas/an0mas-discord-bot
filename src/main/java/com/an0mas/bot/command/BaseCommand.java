@@ -13,6 +13,10 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
  * - 実行処理の定義（execute）
  * - オプションでスラッシュコマンド定義（getSlashCommandData）
  * - 任意でアクセス制限の指定（isRestricted）
+ * 
+ * 主なユースケース：
+ * - このクラスを継承して、各種スラッシュコマンドを簡単に実装できます。
+ * - 例: HelpCommand, PingCommand など
  */
 public abstract class BaseCommand {
 
@@ -93,10 +97,11 @@ public abstract class BaseCommand {
 	 * @param event コマンド実行イベント
 	 */
 	public void executeWithCheck(SlashCommandInteractionEvent event) {
-		if (AccessControlUtil.isBlocked(event.getUser().getId())) {
-			event.reply("\u26d4 あなたはこのBotの利用を制限されています。").setEphemeral(true).queue();
-			return;
-		}
-		this.execute(event);
-	}
+        if (AccessControlUtil.isBlocked(event.getUser().getId())) {
+            System.out.println("ブロックされたユーザーがコマンドを試行: " + event.getUser().getId());
+            event.reply("\u26d4 あなたはこのBotの利用を制限されています。").setEphemeral(true).queue();
+            return;
+        }
+        this.execute(event);
+    }
 }
