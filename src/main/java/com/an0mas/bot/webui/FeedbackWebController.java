@@ -46,6 +46,9 @@ public class FeedbackWebController {
 		model.addAttribute("startCount", offset + 1);
 		model.addAttribute("endCount", Math.min(offset + pageSize, total));
 
+		model.addAttribute("backUrl", "/");
+		model.addAttribute("showBack", true);
+
 		return "feedbacks";
 	}
 

@@ -1,31 +1,32 @@
+<!-- templates/dashboard.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/base}">
 
 <head>
 	<meta charset="UTF-8">
 	<title>⚙️ ダッシュボード</title>
-	<link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+	<th:block layout:fragment="head-extra">
+		<link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+	</th:block>
 </head>
 
-<body layout:decorate="~{base}">
-
+<body>
 	<div layout:fragment="content">
-		<h1>⚙️ ダッシュボード</h1>
+		<div class="page-header">
+			<h1>⚙️ ダッシュボード</h1>
+		</div>
 
-		<!-- ✅ メンテナンス状態表示 -->
 		<div class="section">
 			<h2>🛠️ メンテナンスモード</h2>
 			<p>
 				現在の状態：
 				<strong th:text="${maintenance ? '🟢 有効' : '🔴 無効'}"></strong>
 			</p>
-
-			<!-- 🔁 トグルボタン -->
 			<form th:action="@{/dashboard/toggle-maintenance}" method="post">
 				<button type="submit" class="toggle-btn" th:text="${maintenance ? '🔽 無効にする' : '🔼 有効にする'}"></button>
 			</form>
 		</div>
-
 	</div>
 </body>
 

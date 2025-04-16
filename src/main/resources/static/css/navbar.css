@@ -1,47 +1,28 @@
-/* static/css/navbar.css */
-
 .navbar {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 1rem;
-	background-color: #007acc;
-	padding: 1rem;
-	border: 1px solid transparent;
-	border-radius: 8px;
-	margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+
+  padding: 1rem 1.5rem;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
 }
 
-.nav-link {
-	display: inline-block;
-	color: white;
-	text-decoration: none;
-	font-weight: bold;
-	padding: 0.5rem 1rem;
-	background-color: rgba(255, 255, 255, 0.1);
-	border-radius: 6px;
-	transition: background-color 0.2s;
+.navbar .nav-link,
+.navbar .back-button {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: bold;
+  color: #333;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s;
 }
 
-.nav-link:hover {
-	background-color: rgba(255, 255, 255, 0.3);
-	text-decoration: none;
-}
-
-.nav-link:focus {
-	outline: 2px solid rgba(255, 255, 255, 0.5);
-	background-color: rgba(255, 255, 255, 0.3);
-}
-
-.back-button {
-	display: inline-block;
-	padding: 0.5rem 1rem;
-	background-color: #005b99;
-	color: white;
-	border-radius: 5px;
-	text-decoration: none;
-	font-weight: bold;
-}
-
-.back-button:hover {
-	background-color: #00447a;
+.navbar .nav-link:hover,
+.navbar .back-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }

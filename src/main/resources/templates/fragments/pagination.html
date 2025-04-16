@@ -1,0 +1,44 @@
+<!-- templates/fragments/pagination.html -->
+<div th:fragment="pagination (currentPage, totalPages, baseUrl)"
+     th:with="startPage=${currentPage - 1 < 1 ? 1 : currentPage - 1},
+              endPage=${currentPage + 1 > totalPages ? totalPages : currentPage + 1}"
+     class="pagination-wrapper">
+
+  <!-- 前へ -->
+  <span th:if="${currentPage == 1}" class="page-link disabled">← 前へ</span>
+  <a th:if="${currentPage > 1}" th:href="@{${baseUrl}(page=${currentPage - 1})}" class="page-link">← 前へ</a>
+
+  <!-- 7ページ以下なら全表示 -->
+  <span th:if="${totalPages <= 7}" class="pagination-block">
+    <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+      <span th:if="${i == currentPage}" class="page-link current" th:text="${i}">1</span>
+      <a th:if="${i != currentPage}" th:href="@{${baseUrl}(page=${i})}" class="page-link" th:text="${i}">1</a>
+    </span>
+  </span>
+
+  <!-- 7ページ以上なら省略表示 -->
+  <span th:if="${totalPages > 7}" class="pagination-block">
+
+    <!-- 先頭ページ -->
+    <span th:if="${currentPage > 3}">
+      <a th:href="@{${baseUrl}(page=1)}" class="page-link">1</a>
+      <span class="page-link disabled">...</span>
+    </span>
+
+    <!-- 中央ページ -->
+    <span th:each="i : ${#numbers.sequence(startPage, endPage)}">
+      <span th:if="${i == currentPage}" class="page-link current" th:text="${i}">1</span>
+      <a th:if="${i != currentPage}" th:href="@{${baseUrl}(page=${i})}" class="page-link" th:text="${i}">1</a>
+    </span>
+
+    <!-- 末尾ページ -->
+    <span th:if="${currentPage < totalPages - 2}">
+      <span class="page-link disabled">...</span>
+      <a th:href="@{${baseUrl}(page=${totalPages})}" class="page-link" th:text="${totalPages}">10</a>
+    </span>
+  </span>
+
+  <!-- 次へ -->
+  <span th:if="${currentPage == totalPages}" class="page-link disabled">次へ →</span>
+  <a th:if="${currentPage < totalPages}" th:href="@{${baseUrl}(page=${currentPage + 1})}" class="page-link">次へ →</a>
+</div>

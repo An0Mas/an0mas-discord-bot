@@ -1,15 +1,16 @@
 package com.an0mas.bot.listener;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.an0mas.bot.command.BaseCommand;
 import com.an0mas.bot.command.CommandRegistry;
+import com.an0mas.bot.config.ConfigLoader;
 import com.an0mas.bot.database.DatabaseHelper;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
     
 
 public class SlashCommandListener extends ListenerAdapter {
@@ -25,9 +26,12 @@ public class SlashCommandListener extends ListenerAdapter {
         BaseCommand command = CommandRegistry.getByName(commandName);
 
         if (DatabaseHelper.isMaintenanceMode()) {
+            String ownerId = ConfigLoader.get("BOT_OWNER_ID");
+            if (!userId.equals(ownerId)) {
             logger.warn("⛔ メンテナンスモード中のため、ユーザー {} はコマンドを実行できません: {}", userId, commandName);
             event.reply("⚠️ 現在メンテナンスモード中のため、このコマンドは実行できません。").setEphemeral(true).queue();
             return;
+            }
         }
 
         if (command == null) {

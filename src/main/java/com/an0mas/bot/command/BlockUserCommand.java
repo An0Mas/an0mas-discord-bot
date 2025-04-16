@@ -24,7 +24,7 @@ public class BlockUserCommand extends BaseCommand {
 	@Override
 	public void execute(SlashCommandInteractionEvent event) {
 		// ✅ 開発者のみ使用可
-		String ownerId = ConfigLoader.get("OWNER_ID");
+		String ownerId = ConfigLoader.get("BOT_OWNER_ID");
 		if (ownerId == null || !event.getUser().getId().equals(ownerId)) {
 			event.reply("⚠️ このコマンドは開発者専用です。\n（あなたのID: `%s`）"
 					.formatted(event.getUser().getId()))

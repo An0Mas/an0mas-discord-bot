@@ -2,16 +2,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<body>
-	<nav class="navbar" th:fragment="navbar(backUrl, showBack)">
-		<!-- 🔙 戻るボタン（必要な場合のみ表示） -->
+<nav class="navbar" th:fragment="navbar(backUrl, showBack)">
+	<div class="navbar-inner">
 		<a th:if="${showBack}" th:href="${backUrl}" class="back-button">← 戻る</a>
-
-		<!-- 🧭 メインナビリンク -->
-		<a href="/" class="nav-link">🏠 ホーム</a>
-		<a href="/feedbacks" class="nav-link">📬 フィードバック</a>
-		<!-- <a href="/settings" class="nav-link">⚙️ 設定</a>  ← 将来用に残してもOK！ -->
-	</nav>
-</body>
-
-</html>
+		<a href="/" class="nav-link home-button">🏠 ホーム</a>
+		<a href="/feedbacks" class="nav-link feedback-button">📬 フィードバック</a>
+		<a href="/dashboard" class="nav-link dashboard-button">⚙️ ダッシュボード</a>
+	</div>
+</nav>

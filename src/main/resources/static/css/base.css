@@ -1,0 +1,88 @@
+/* ===============================
+   🌐 共通ベーススタイル（base.css）
+   =============================== */
+
+body {
+  background-color: #f4f4f4;
+  margin: 0;
+  padding-top: 80px; /* ナビバー固定時の余白 */
+  font-family: sans-serif;
+}
+
+.main-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h1:first-child {
+  margin-top: 0;
+}
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+}
+
+nav + * {
+  margin-top: 80px; /* ナビバー高さと合わせる */
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.feedback-count,
+.info-text {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.section {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+button {
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  border: none;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  margin-top: 0.5rem;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
