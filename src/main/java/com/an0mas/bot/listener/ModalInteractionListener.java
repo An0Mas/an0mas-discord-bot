@@ -7,9 +7,8 @@ import java.util.Locale;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.an0mas.bot.config.ConfigLoader;
 import com.an0mas.bot.database.FeedbackDatabaseHelper;
-import com.an0mas.bot.util.BotConstants;
-
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
@@ -67,7 +66,7 @@ public class ModalInteractionListener extends ListenerAdapter {
 				.queue();
 
 		// 📢 通知を送信（BotConstantsで指定したチャンネルへ）
-		TextChannel notifyChannel = event.getJDA().getTextChannelById(BotConstants.FEEDBACK_NOTIFY_CHANNEL_ID);
+		TextChannel notifyChannel = event.getJDA().getTextChannelById(ConfigLoader.get("FEEDBACK_NOTIFY_CHANNEL_ID"));
 		if (notifyChannel != null) {
 			String displayName = anonymous ? "匿名" : userName;
 

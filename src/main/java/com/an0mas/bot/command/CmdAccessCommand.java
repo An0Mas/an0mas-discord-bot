@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.an0mas.bot.config.ConfigLoader;
 import com.an0mas.bot.database.DatabaseHelper;
-import com.an0mas.bot.util.BotConstants;
-
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
@@ -25,7 +24,8 @@ public class CmdAccessCommand extends BaseCommand {
 
 	@Override
 	public void execute(SlashCommandInteractionEvent event) {
-		if (!event.getUser().getId().equals(BotConstants.OWNER_ID)) {
+		String ownerId = ConfigLoader.get("BOT_OWNER_ID");
+		if (ownerId == null || !event.getUser().getId().equals(ownerId)) {
 			event.reply("⛔ このコマンドは開発者専用です。").setEphemeral(true).queue();
 			return;
 		}

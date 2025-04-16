@@ -36,7 +36,6 @@ public class Main {
 		}
 
 		// 🔐 .envファイルからトークンを読み込む
-		Dotenv dotenv = Dotenv.load();
 		String token = ConfigLoader.get("DISCORD_TOKEN");
 		if (token == null || token.isBlank()) {
 			throw new IllegalArgumentException("❌ DISCORD_TOKEN が見つかりません！");

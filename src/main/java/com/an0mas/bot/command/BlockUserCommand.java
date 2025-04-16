@@ -2,10 +2,9 @@ package com.an0mas.bot.command;
 
 import java.util.List;
 
+import com.an0mas.bot.config.ConfigLoader;
 import com.an0mas.bot.database.DatabaseHelper;
 import com.an0mas.bot.util.AccessControlUtil;
-import com.an0mas.bot.util.BotConstants;
-
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -25,7 +24,8 @@ public class BlockUserCommand extends BaseCommand {
 	@Override
 	public void execute(SlashCommandInteractionEvent event) {
 		// ✅ 開発者のみ使用可
-		if (!event.getUser().getId().equals(BotConstants.OWNER_ID)) {
+		String ownerId = ConfigLoader.get("OWNER_ID");
+		if (ownerId == null || !event.getUser().getId().equals(ownerId)) {
 			event.reply("⚠️ このコマンドは開発者専用です。\n（あなたのID: `%s`）"
 					.formatted(event.getUser().getId()))
 					.setEphemeral(true)

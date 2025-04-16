@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.an0mas.bot.config.ConfigLoader;
 import com.an0mas.bot.database.FeedbackDatabaseHelper;
 import com.an0mas.bot.model.FeedbackEntry;
-import com.an0mas.bot.util.BotConstants;
 import com.an0mas.bot.util.EmbedUtil;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -26,7 +26,8 @@ public class FeedbackListCommand extends BaseCommand {
 
 	@Override
 	public void execute(SlashCommandInteractionEvent event) {
-		if (!event.getUser().getId().equals(BotConstants.OWNER_ID)) {
+		String ownerId = ConfigLoader.get("BOT_OWNER_ID");
+		if (ownerId == null || !event.getUser().getId().equals(ownerId)) {
 			event.reply("⚠️ このコマンドは開発者専用です。").setEphemeral(true).queue();
 			return;
 		}
