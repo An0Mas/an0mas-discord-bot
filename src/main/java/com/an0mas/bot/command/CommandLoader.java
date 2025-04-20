@@ -20,4 +20,21 @@ public class CommandLoader {
 		// 🧩 今後ここに新しいコマンドを追加していくだけ！
 		);
 	}
+	
+	//💡 コマンドが増えてきたら下のReflectionsコードに切り替えてOK！
+//	Reflections reflections = new Reflections("com.an0mas.bot.command");
+//
+//	return reflections.getSubTypesOf(BaseCommand.class).stream()
+//	    .filter(clazz -> !Modifier.isAbstract(clazz.getModifiers()))
+//	    .map(clazz -> {
+//	        try {
+//	            return clazz.getDeclaredConstructor().newInstance();
+//	        } catch (Exception e) {
+//	            System.err.println("⚠ コマンドの生成に失敗: " + clazz.getName());
+//	            e.printStackTrace();
+//	            return null;
+//	        }
+//	    })
+//	    .filter(Objects::nonNull)
+//	    .collect(Collectors.toList());
 }
