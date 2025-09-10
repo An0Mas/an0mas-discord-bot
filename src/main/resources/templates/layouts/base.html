@@ -5,6 +5,10 @@
 	<meta charset="UTF-8">
 	<title>Bot 管理画面</title>
 
+	<!-- ✅ Tabler UI CDN -->
+	<link href="https://unpkg.com/@tabler/core@latest/dist/css/tabler.min.css" rel="stylesheet">
+	<script src="https://unpkg.com/@tabler/core@latest/dist/js/tabler.min.js"></script>
+
 	<!-- 共通スタイル -->
 	<link rel="stylesheet" th:href="@{/css/base.css}" />
 	<link rel="stylesheet" th:href="@{/css/navbar.css}" />
@@ -13,9 +17,11 @@
 	<th:block layout:fragment="head-extra"></th:block>
 </head>
 
+
 <body>
 	<!-- ナビゲーションバー -->
-	<nav th:replace="~{fragments/navbar :: navbar('/', true)}"></nav>
+	<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
 
 	<!-- メインコンテンツラッパー -->
 	<main class="main-container">

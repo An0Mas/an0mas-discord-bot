@@ -1,44 +1,48 @@
 <!-- templates/fragments/pagination.html -->
-<div th:fragment="pagination (currentPage, totalPages, baseUrl)"
-     th:with="startPage=${currentPage - 1 < 1 ? 1 : currentPage - 1},
-              endPage=${currentPage + 1 > totalPages ? totalPages : currentPage + 1}"
-     class="pagination-wrapper">
+<ul th:fragment="pagination(currentPage, totalPages, baseUrl)" th:with="startPage=${currentPage - 1 < 1 ? 1 : currentPage - 1},
+             endPage=${currentPage + 1 > totalPages ? totalPages : currentPage + 1}"
+	class="pagination justify-content-center my-4 flex-wrap gap-2">
 
-  <!-- 前へ -->
-  <span th:if="${currentPage == 1}" class="page-link disabled">← 前へ</span>
-  <a th:if="${currentPage > 1}" th:href="@{${baseUrl}(page=${currentPage - 1})}" class="page-link">← 前へ</a>
+	<!-- ← 前へ -->
+	<li class="page-item" th:classappend="${currentPage == 1} ? ' disabled'">
+		<a class="page-link" th:href="@{${baseUrl}(page=${currentPage - 1})}">← 前へ</a>
+	</li>
 
-  <!-- 7ページ以下なら全表示 -->
-  <span th:if="${totalPages <= 7}" class="pagination-block">
-    <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-      <span th:if="${i == currentPage}" class="page-link current" th:text="${i}">1</span>
-      <a th:if="${i != currentPage}" th:href="@{${baseUrl}(page=${i})}" class="page-link" th:text="${i}">1</a>
-    </span>
-  </span>
+	<!-- ✅ 7ページ以下の場合：全部表示 -->
+	<th:block th:if="${totalPages <= 7}">
+		<li th:each="i : ${#numbers.sequence(1, totalPages)}"
+			th:class="'page-item' + (${i} == ${currentPage} ? ' active' : '')">
+			<a class="page-link" th:href="@{${baseUrl}(page=${i})}" th:text="${i}">1</a>
+		</li>
+	</th:block>
 
-  <!-- 7ページ以上なら省略表示 -->
-  <span th:if="${totalPages > 7}" class="pagination-block">
+	<!-- ✅ 7ページ以上の場合：省略付き -->
+	<th:block th:if="${totalPages > 7}">
+		<!-- 1ページ目＋... -->
+		<th:block th:if="${currentPage > 3}">
+			<li class="page-item">
+				<a class="page-link" th:href="@{${baseUrl}(page=1)}">1</a>
+			</li>
+			<li class="page-item disabled"><a class="page-link">...</a></li>
+		</th:block>
 
-    <!-- 先頭ページ -->
-    <span th:if="${currentPage > 3}">
-      <a th:href="@{${baseUrl}(page=1)}" class="page-link">1</a>
-      <span class="page-link disabled">...</span>
-    </span>
+		<!-- 中央の範囲 -->
+		<li th:each="i : ${#numbers.sequence(startPage, endPage)}"
+			th:class="'page-item' + (${i} == ${currentPage} ? ' active' : '')">
+			<a class="page-link" th:href="@{${baseUrl}(page=${i})}" th:text="${i}">1</a>
+		</li>
 
-    <!-- 中央ページ -->
-    <span th:each="i : ${#numbers.sequence(startPage, endPage)}">
-      <span th:if="${i == currentPage}" class="page-link current" th:text="${i}">1</span>
-      <a th:if="${i != currentPage}" th:href="@{${baseUrl}(page=${i})}" class="page-link" th:text="${i}">1</a>
-    </span>
+		<!-- ...＋最終ページ -->
+		<th:block th:if="${currentPage < totalPages - 2}">
+			<li class="page-item disabled"><a class="page-link">...</a></li>
+			<li class="page-item">
+				<a class="page-link" th:href="@{${baseUrl}(page=${totalPages})}" th:text="${totalPages}">10</a>
+			</li>
+		</th:block>
+	</th:block>
 
-    <!-- 末尾ページ -->
-    <span th:if="${currentPage < totalPages - 2}">
-      <span class="page-link disabled">...</span>
-      <a th:href="@{${baseUrl}(page=${totalPages})}" class="page-link" th:text="${totalPages}">10</a>
-    </span>
-  </span>
-
-  <!-- 次へ -->
-  <span th:if="${currentPage == totalPages}" class="page-link disabled">次へ →</span>
-  <a th:if="${currentPage < totalPages}" th:href="@{${baseUrl}(page=${currentPage + 1})}" class="page-link">次へ →</a>
-</div>
+	<!-- → 次へ -->
+	<li class="page-item" th:classappend="${currentPage == totalPages} ? ' disabled'">
+		<a class="page-link" th:href="@{${baseUrl}(page=${currentPage + 1})}">次へ →</a>
+	</li>
+</ul>

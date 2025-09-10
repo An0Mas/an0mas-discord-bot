@@ -1,28 +1,56 @@
-.navbar {
+/* ===============================
+   🌐 ナビバー共通CSS（navbar.css）
+   =============================== */
+
+/* 🚩 全体ラップ（固定用） */
+.navbar-fixed-wrap {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: white;
+  z-index: 999;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 🚩 上段：ロゴ＆ログイン表示 */
+.navbar-upper {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-
-  padding: 1rem 1.5rem;
+  height: 60px;
+  padding: 0.5rem 1.5rem;
   background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
 }
 
-.navbar .nav-link,
-.navbar .back-button {
-  display: inline-block;
-  text-decoration: none;
+/* 🚩 下段：リンクボタン */
+.navbar-lower {
+  padding: 0.3rem 1rem;
+  background-color: white;
+  border-top: 1px solid #e0e0e0;
+}
+
+.navbar-lower .nav {
+  gap: 0.5rem;
+}
+
+.navbar-lower .nav-link {
+  border-radius: 0;
+  background: none;
+  font-weight: normal;
+  color: #555;
+  padding: 0.3rem 0.75rem; /* ← 上下だけちょっと詰める */
+  transition: color 0.2s;
+  line-height: 1.2; /* アイコンやテキストとの間隔も詰めたい時に */
+}
+
+.navbar-lower .nav-link.active {
+  color: #206bc4;
   font-weight: bold;
-  color: #333;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  background-color: rgba(0, 0, 0, 0.05);
-  transition: background-color 0.2s;
+  border-bottom: 2px solid #206bc4;
+  margin-bottom: -1px; /* 下線との隙間を埋める */
 }
 
-.navbar .nav-link:hover,
-.navbar .back-button:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+/* 🚩 ページ全体の上部に余白を与えて被らないように */
+body {
+  padding-top: 120px; /* 上段60px + 下段約60px を想定 */
 }

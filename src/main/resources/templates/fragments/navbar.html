@@ -1,12 +1,54 @@
 <!-- fragments/navbar.html -->
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<nav th:fragment="navbar" class="navbar-fixed-wrap">
+	<!-- 🌟 上段：ロゴとログイン表示 -->
+	<div class="navbar-upper">
+		<div class="container-fluid d-flex justify-content-between align-items-center px-3 py-2">
+			<!-- ロゴ -->
+			<a href="/" class="navbar-brand d-flex align-items-center">
+				<img src="/images/bot-icon.png" alt="Bot Icon" width="32" height="32" class="me-2">
+				<span class="fw-bold">An0MasBOT</span>
+			</a>
 
-<nav class="navbar" th:fragment="navbar(backUrl, showBack)">
-	<div class="navbar-inner">
-		<a th:if="${showBack}" th:href="${backUrl}" class="back-button">← 戻る</a>
-		<a href="/" class="nav-link home-button">🏠 ホーム</a>
-		<a href="/feedbacks" class="nav-link feedback-button">📬 フィードバック</a>
-		<a href="/dashboard" class="nav-link dashboard-button">⚙️ ダッシュボード</a>
+			<!-- ログイン状態 -->
+			<ul class="navbar-nav flex-row">
+				<li th:if="${loggedIn}" class="nav-item dropdown">
+					<a href="#" class="nav-link d-flex align-items-center" data-bs-toggle="dropdown">
+						<img th:src="${userAvatarUrl}" alt="User Avatar" class="rounded-circle" width="32" height="32">
+						<span class="ms-2" th:text="${username}">User</span>
+					</a>
+					<div class="dropdown-menu dropdown-menu-end">
+						<a class="dropdown-item" href="/settings">⚙️ 設定</a>
+						<a class="dropdown-item" href="/logout">🚪 ログアウト</a>
+					</div>
+				</li>
+				<li th:unless="${loggedIn}" class="nav-item">
+					<a href="/login" class="btn btn-primary">🔑 ログイン</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- 🌟 下段：ページリンク -->
+	<div class="navbar-lower border-top bg-white">
+		<div class="container-fluid px-3">
+			<ul class="nav nav-pills py-1">
+				<li class="nav-item">
+					<a th:href="@{/}" th:classappend="${currentPath == '/' ? 'active' : ''}" class="nav-link px-3">🏠
+						Home</a>
+				</li>
+				<li class="nav-item">
+					<a th:href="@{/feedbacks}" th:classappend="${currentPath.startsWith('/feedbacks') ? 'active' : ''}"
+						class="nav-link px-3">📬 フィードバック</a>
+				</li>
+				<li class="nav-item">
+					<a th:href="@{/dashboard}" th:classappend="${currentPath.startsWith('/dashboard') ? 'active' : ''}"
+						class="nav-link px-3">⚙️ ダッシュボード</a>
+				</li>
+				<li class="nav-item">
+					<a th:href="@{/cmdaccess}" th:classappend="${currentPath.startsWith('/cmdaccess') ? 'active' : ''}"
+						class="nav-link px-3">🛡️ コマンド管理</a>
+				</li>
+			</ul>
+		</div>
 	</div>
 </nav>

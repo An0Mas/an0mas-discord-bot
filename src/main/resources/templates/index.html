@@ -1,56 +1,36 @@
+<!-- templates/index.html -->
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layouts/base}">
 
 <head>
-	<meta charset="UTF-8">
-	<title>📊 管理ページ（An0MasBot）</title>
-	<style>
-		body {
-			font-family: sans-serif;
-			padding: 2rem;
-			background-color: #eef1f5;
-		}
-
-		h1 {
-			color: #333;
-		}
-
-		nav.menu {
-			background: white;
-			padding: 1.5rem;
-			border-radius: 10px;
-			box-shadow: 0 0 10px #ccc;
-		}
-
-		nav.menu ul {
-			list-style: none;
-			margin: 0;
-			padding: 0;
-		}
-
-		nav.menu li {
-			margin: 1rem 0;
-		}
-
-		nav.menu a {
-			font-size: 1.2rem;
-			color: #007acc;
-			text-decoration: none;
-		}
-	</style>
+	<title>📊 An0MasBot 管理メニュー</title>
+	<th:block layout:fragment="head-extra">
+		<!-- ページ専用のCSSがあればここに -->
+	</th:block>
 </head>
 
 <body>
-	<h1>📊 An0MasBot 管理メニュー</h1>
-	<nav class="menu">
-		<ul>
-			<li><a href="/feedbacks">📬 フィードバック一覧</a></li>
-			<li><a href="/dashboard">⚙️ ダッシュボード</a></li>
-			<!-- 今後、以下の項目を追加可能 -->
-			<!-- <li><a href="/feedbacks/export">📁 エクスポート</a></li> -->
-			<!-- <li><a href="/settings">⚙️ 設定</a></li> -->
-		</ul>
-	</nav>
+	<main layout:fragment="content">
+		<div th:if="${loggedIn}" class="welcome-section"
+			style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+			<img th:src="${userAvatarUrl}" alt="User Avatar" width="48" height="48" style="border-radius: 50%;">
+			<p style="font-size: 1.2rem;">ようこそ <strong th:text="${username}">ユーザー名</strong> さん！</p>
+		</div>
+		<div class="section">
+			<h1 class="mb-3">📊 An0MasBot Web 管理ページへようこそ！</h1>
+			<p class="lead">
+				このページでは、Botの各種機能をブラウザから操作できます。<br>
+				<strong>一部の機能はログインが必要です。</strong>
+			</p>
+
+			<hr>
+
+			<ul>
+				<li><a href="/feedbacks">📬 フィードバックを見る（ログイン不要）</a></li>
+				<li><a>なんか書く</a></li>
+			</ul>
+		</div>
+	</main>
 </body>
 
 </html>

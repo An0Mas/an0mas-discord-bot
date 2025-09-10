@@ -1,3 +1,4 @@
+<!-- templates/feedbacks.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layouts/base}">
@@ -15,33 +16,38 @@
 		<div class="page-header">
 			<h1>📬 フィードバック一覧</h1>
 			<div class="feedback-count"
-				th:text="'全 ' + ${totalCount} + ' 件中 ' + ${startCount} + '〜' + ${endCount} + ' 件を表示中'">
+				 th:text="'全 ' + ${totalCount} + ' 件中 ' + ${startCount} + '〜' + ${endCount} + ' 件を表示中'">
 				件数
 			</div>
 		</div>
 
-		<!-- ページネーション（上部） -->
+		<!-- ページネーション上部 -->
 		<div th:replace="~{fragments/pagination :: pagination(${currentPage}, ${totalPages}, '/feedbacks')}"></div>
 
-
-		<div th:if="${message}" class="feedback-message">
+		<!-- ✅ メッセージ表示 -->
+		<div th:if="${message}" class="alert alert-info" role="alert">
 			<p th:text="${message}">操作メッセージ</p>
 		</div>
 
-		<div th:each="fb : ${feedbacks}" class="feedback">
-			<h2 th:text="${fb.title}">件名</h2>
-			<div class="meta">
-				<strong>ユーザー:</strong> <span th:text="${fb.userName}">匿名</span><br />
-				<strong>日時:</strong> <span th:text="${fb.timestamp}">日時</span>
+		<!-- 🔁 フィードバック一覧（TablerカードUI） -->
+		<div th:each="fb : ${feedbacks}" class="card mb-3">
+			<div class="card-header">
+				<h3 class="card-title" th:text="${fb.title}">件名</h3>
 			</div>
-			<p th:text="${fb.content}">本文</p>
-			<form th:action="@{/feedbacks/delete}" method="post" onsubmit="return confirm('本当に削除しますか？');">
-				<input type="hidden" name="id" th:value="${fb.id}" />
-				<button type="submit" class="delete-btn" aria-label="削除" title="削除">🗑️ 削除</button>
-			</form>
+			<div class="card-body">
+				<div class="text-muted mb-2">
+					<strong>ユーザー:</strong> <span th:text="${fb.userName}">匿名</span><br />
+					<strong>日時:</strong> <span th:text="${fb.timestamp}">日時</span>
+				</div>
+				<p th:text="${fb.content}">本文</p>
+				<form th:action="@{/feedbacks/delete}" method="post" onsubmit="return confirm('本当に削除しますか？');">
+					<input type="hidden" name="id" th:value="${fb.id}" />
+					<button type="submit" class="btn btn-danger" aria-label="削除" title="削除">🗑️ 削除</button>
+				</form>
+			</div>
 		</div>
 
-		<!-- ページネーション（下部） -->
+		<!-- ページネーション下部 -->
 		<div th:replace="~{fragments/pagination :: pagination(${currentPage}, ${totalPages}, '/feedbacks')}"></div>
 	</div>
 </body>

@@ -1,4 +1,4 @@
-package com.an0mas.bot.webui;
+package com.an0mas.bot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

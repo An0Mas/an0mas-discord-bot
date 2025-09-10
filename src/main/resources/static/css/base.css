@@ -2,56 +2,27 @@
    🌐 共通ベーススタイル（base.css）
    =============================== */
 
+/* ✅ 全体の背景と文字設定 */
 body {
   background-color: #f4f4f4;
   margin: 0;
-  padding-top: 80px; /* ナビバー固定時の余白 */
   font-family: sans-serif;
 }
 
-.main-container {
+/* ✅ メインコンテンツラッパー */
+main, .main-container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 2rem;
+  margin-top: 120px !important;
 }
 
+/* ✅ タイトルの上余白を削除（h1が最初の要素なら） */
 h1:first-child {
   margin-top: 0;
 }
 
-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 80px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 999;
-}
-
-nav + * {
-  margin-top: 80px; /* ナビバー高さと合わせる */
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 1.5rem;
-}
-
-.page-header h1 {
-  margin: 0;
-  font-size: 1.8rem;
-}
-
-.feedback-count,
-.info-text {
-  font-size: 0.9rem;
-  color: #555;
-}
-
+/* ✅ セクション・カードなどの共通枠 */
 .section {
   background-color: #fff;
   border-radius: 8px;
@@ -60,6 +31,7 @@ nav + * {
   margin-bottom: 2rem;
 }
 
+/* ✅ ボタンの基本スタイル */
 button {
   cursor: pointer;
   font-weight: bold;
@@ -68,21 +40,29 @@ button {
   border: none;
 }
 
+/* ✅ 削除ボタンの個別色付け */
 .delete-btn {
   background-color: #e74c3c;
   color: white;
   margin-top: 0.5rem;
 }
-
 .delete-btn:hover {
   background-color: #c0392b;
 }
 
-.pagination-wrapper {
+body {
+  padding-top: 120px; /* 上段60px + 下段約60px を想定 */
+}
+
+.welcome-section {
   display: flex;
-  justify-content: center;
-  margin-top: 1.5rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.welcome-section img {
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
 }
